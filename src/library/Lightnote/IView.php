@@ -18,14 +18,16 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote;
 
 /**
- * Control class
+ * IView interface
  *
  *
  */
-class Control
+interface IView
 {
-    
+    function assign($key, $value);
+    function clear($key = null);
+    function fetch();
 }

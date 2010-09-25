@@ -18,14 +18,28 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote\Http;
 
 /**
- * Control class
- *
- *
+ * HttpContext class
  */
-class Control
+class HttpContext
 {
-    
+    /**
+     *
+     * @var HttpRequest
+     */
+    public $request = null;
+
+    /**
+     *
+     * @var Session
+     */
+    public $session = null;
+
+    /**
+     *
+     * @var Cache
+     */
+    public $cache = null;
 }

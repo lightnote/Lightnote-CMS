@@ -18,14 +18,14 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Template;
+namespace Lightnote\View;
 
 /**
- * SmartyTemplate class
+ * SmartyView class
  *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ *
  */
-class SmartyTemplate implements \Lightnote\ITemplate
+class SmartyView implements \Lightnote\IView
 {
     
 }

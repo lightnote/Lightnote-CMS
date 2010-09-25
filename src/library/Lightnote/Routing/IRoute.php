@@ -23,13 +23,17 @@ namespace Lightnote\Routing;
 /**
  * IRoute interface
  *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ *
  */
 interface IRoute
 {
+    
     /**
      * @return bool
      */
     function match($url);
+
+
+
     
 }

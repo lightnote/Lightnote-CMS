@@ -18,14 +18,41 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Plugin\Content\Text;
+namespace Lightnote\Routing;
 
 /**
- * Controller class
- *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ * RouteConfig class
  */
-class Controller
+class RouteConfig
 {
-    
+    /**
+     *
+     * @var array
+     */
+    public $namespaces = array();
+
+    /**
+     *
+     * @var array
+     */
+    public $params = array();
+
+    /**
+     *
+     * @var array
+     */
+    public $constrains = array();
+
+    /**
+     *
+     * @param array $namespaces
+     * @param array $params
+     * @param array $constrains
+     */
+    public function __construct($namespaces = array(), $params = array(), $constrains = array())
+    {
+        $this->namespaces = $namespaces;
+        $this->params = $params;
+        $this->constrains = $constrains;
+    }
 }

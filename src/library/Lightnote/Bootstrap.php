@@ -18,14 +18,42 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote;
 
 /**
- * Control class
- *
- *
+ * Bootstrap class
  */
-class Control
+abstract class Bootstrap
 {
+    /**
+     *
+     * @var Application
+     */
+    protected $application;
+
+
+    /**
+     *
+     * @var Routing\RouteCollection
+     */
+    public $routes;
+
+    public function __construct(Application $application)
+    {
+        $this->application = $application;
+        $this->routes = new Routing\RouteCollection();
+    }
+
+    protected function registerRoutes()
+    {
+        $handler = new Mvc\RouteHandler($this->application->httpContext);
+
+        $this->routes[] = new Routing\Route($url, $handler);
+    }
     
+
+    public function run()
+    {
+        $this->registerRoutes();
+    }
 }

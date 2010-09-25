@@ -18,14 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote\Mvc;
 
 /**
- * Control class
- *
- *
+ * Model class
  */
-class Control
+class Model
 {
     
 }

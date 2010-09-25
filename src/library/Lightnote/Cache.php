@@ -18,14 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote;
 
 /**
- * Control class
- *
- *
+ * Cache class
  */
-class Control
+class Cache
 {
     
 }

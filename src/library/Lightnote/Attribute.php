@@ -18,14 +18,26 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote;
 
 /**
- * Control class
- *
- *
+ * Attribute class
  */
-class Control
+class Attribute
 {
-    
+    public function  __get($key)
+    {
+        if(method_exists($this, 'get' . $key))
+        {
+            return call_user_func(array($this, 'get' . $key));
+        }
+    }
+
+    public function __set($key, $value)
+    {
+        if(method_exists($this, 'set' . $key))
+        {
+            return call_user_func(array($this, 'set' . $key), $value);
+        }
+    }
 }

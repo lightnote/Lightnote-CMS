@@ -18,14 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote\Routing;
 
 /**
- * Control class
- *
- *
+ * IRouteHandler interface
  */
-class Control
+interface IRouteHandler
 {
-    
+    function getHttpContext();
 }

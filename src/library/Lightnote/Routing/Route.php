@@ -23,93 +23,101 @@ namespace Lightnote\Routing;
 /**
  * Route class
  *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ *
  */
 class Route implements IRoute
 {
-    private $name = '';
-    private $pattern = '';
-    private $defaults = null;
+    const GROUP_REGEXP = '/\{([a-z0-9_-]+)\}/i';
+    const CATCH_ALL_REGEXP = '/\{\*([a-z0-9_-]+)\}$/i';
+
+    /**
+     *
+     * @var string
+     */
+    private $url = '';
+
+    /**
+     *
+     * @var array
+     */
+    private $data = array();
+
+    /**
+     *
+     * @var array
+     */
     private $constrains = array();
 
-    public function __construct($name, $pattern, $defaults = null, $constrains = null)
+    /**
+     *
+     * @var IRouteHandler
+     */
+    private $routeHandler = null;
+
+    /**
+     *
+     * @var array
+     */
+    private $dataKeys = array();
+
+    /**
+     *
+     * @var array
+     */
+    private $namespaces = array();
+
+    /**
+     *
+     * @var string
+     */
+    private $lastMatchedUrl = null;
+
+
+    // @todo implement routeExistingFiles
+    // @todo exception: controller, action must be specified
+
+    /**
+     *
+     * @param string $url Url pattern, i.e. {controller}/{action}/{id}
+     * @param Lightnote\Routing\IRouteHandler $routeHandler
+     * @param RouteConfig $config
+     */
+    public function __construct($url, IRouteHandler $routeHandler, RouteConfig $config = null)
     {
-        $this->name = $name;
-        $this->pattern = $pattern;
-        $this->defaults = $defaults;
-        $this->constrains = $contrains;
+        $this->url = $url;
+        $this->validateUrlFormat();
+
+        $this->routeHandler = $routeHandler;
+        if($config != null)
+        {
+            $this->namespaces = $config->namespace;
+            $this->data = $config->params;
+            $this->constrains = $config->constrains;
+        }
+        
     }
 
-    /*private function getDefaultsRegexp($pattern)
+    private function getCatchAllGroupName()
     {
-        $pattern = \preg_replace('/\{\*?(' . implode('|', array_keys($this->defaults)) . ')\}/', $replacement, $pattern);
-        $pattern = \preg_replace('/\/+/', '/', $pattern);
+        if(preg_match(self::CATCH_ALL_REGEXP, $this->url, $matches))
+        {
+            return $matches[1];
+        }
 
-        return $this->getRegexp($pattern);
-    }*/
+        return null;
+    }
 
-    private function getRegExp($pattern)
+    private function getDataKeys()
     {
-        $parts = explode('/', $pattern);
-
-        $regexp = '/';
-        $openBraceCount = 0;
-        foreach($parts as $part)
+        if($this->dataKeys != null)
         {
-            if(preg_match_all('/\{([a-z0-9]+)\}/', $part, $matches))
-            {
-                $groupNames = $matches[0];
-                
-                $hasDefault = array_key_exists($groupName, $this->defaults);
-
-                // beginning may exists (?) regexp group
-                if($hasDefault)
-                {
-                    $regexp .= '(';
-                }
-
-                // adding group
-                $regexp .= '(?P<' . $groupName . '>[^\/]+)';                
-            }
+            return $this->dataKeys;
         }
 
-        for($i = 0; $i < $openBraceCount; $i++)
-        {
-            $regexp .= ')?';
-        }
+        \preg_match_all(self::GROUP_REGEXP, $this->url, $groupMatches);
+        $this->dataKeys = $groupMatches[1];
 
-        /*$pattern = \preg_replace('/\{([a-z0-9]+)\}/', '(?<$1>[^\/]+)', $pattern);
-        $pattern = \preg_replace('/\{\*([a-z0-9]+)\}/', '(?<$1>.*)', $pattern);
-        $pattern = '^/' . \trim($pattern, '/') . '$';
-
-        return $pattern;*/
-
-        /*preg_match_all('/[^\/]+/i', $this->pattern, $matches);
-
-        $completePartPattern = '/{\*([a-z0-9_-]+)}/i';
-        $partPattern = '/{([a-z0-9_-]+)}/i';
-
-
-        $regexpParts = array();
-        $parts = $matches[0];
-        for($i = 0, $count = count($parts); $i < $count; $i++)
-        {
-            if(preg_match($completePartPattern, $parts[$i], $matches))
-            {
-                $regexpParts[] = '(?P<' . $matches[1] . '>[^\/]+)';
-                break;
-            }
-            else if(preg_match($partPattern, $parts[$i], $matches))
-            {
-                $regexpParts[] = '(?P<' . $matches[1] . '>[^\/]+)';
-            }
-            else
-            {
-                $regexpParts[] = '[^\/]+';
-            }
-        }
-
-        return sprintf('/%s/', implode('\/', $regexpParts));*/
+        return $this->dataKeys;
     }
 
     /**
@@ -118,20 +126,113 @@ class Route implements IRoute
      */
     public function match($url)
     {
-        $regexp = $this->getRegExp($this->pattern);
-        echo $url . "\n";
-        echo $regexp . "\n";
-        //echo $this->getDefaultsRegexp($this->pattern) . "\n";
+        $urlParts = \explode('/', \trim($url, '/'));
+        
+        $patternParts = \explode('/', \trim($this->url, '/'));
 
-        return true;
-        //preg_match($regexp, $url, $matches);
-        //print_r($matches);
-        //echo "\n\n";
+        $catchAllGroupName = $this->getCatchAllGroupName();
+        if($catchAllGroupName != null)
+        {
+            \array_pop($patternParts);            
+        }
+        else if(\count($patternParts) < \count($urlParts))
+        {
+            return false;
+        }
+
+
+        $lastIndex = 0;
+        for ($i = 0, $count = \count($patternParts); $i < $count; $i++)
+        {
+            $part = $patternParts[$i];
+            $regexp = '/' . \preg_replace(self::GROUP_REGEXP, '(?P<$1>[^\/]+)', $part) . '/i';
+            
+            $urlPartExists = \array_key_exists($i, $urlParts);
+
+            $lastIndex = $i;
+            if($urlPartExists && \preg_match($regexp, $urlParts[$i], $matches))
+            {
+                foreach($this->getDataKeys() as $groupName)
+                {
+                    if(\array_key_exists($groupName, $matches))
+                    {
+                        $this->data[$groupName] = $matches[$groupName];
+                    }
+                }
+            }
+            else if (!$urlPartExists)
+            {                
+                break;
+            }
+        }
+
+        if($catchAllGroupName !== null)
+        {
+            $this->data[$catchAllGroupName] = implode('/', \array_splice($urlParts, $lastIndex + 1));
+        }
+
+        $result = $this->validateParams();
+        
+        if($result)
+        {
+            $this->lastMatchedUrl = $url;
+        }
+
+        return $result;
     }
 
-    public function getParams()
+    /**
+     *
+     * @return array
+     */
+    public function getRouteData($url)
     {
-        
+        if($this->lastMatchedUrl == $url || $this->match($url))
+        {
+            return $this->data;
+        }
+
+        return null;
+    }
+
+    private function validateParams()
+    {
+        foreach($this->getDataKeys() as $key)
+        {
+            if(!\array_key_exists($key, $this->data))
+            {
+                return false;
+            }
+        }
+
+        /* @var $constrain Constrain\IConstrain */
+        foreach($this->constrains as $constrain)
+        {
+            if(!$constrain->match($this->routeHandler->getHttpContext(), $this, $this->data))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function validateUrlFormat()
+    {
+        if(preg_match('/^(~|\/)/', $this->url))
+        {
+            throw new \Lightnote\Exception\System\ArgumentException('The url can not start with ~ or /');
+        }
+
+        if(strstr($this->url, '?'))
+        {
+            throw new \Lightnote\Exception\System\ArgumentException('The url can not contain ?');
+        }
+
+        if(preg_match('/{\*([a-z0-9_-]+)\}.+/', $this->url))
+        {
+            throw new \Lightnote\Exception\System\ArgumentException('The url can not contain ?');
+        }
     }
 
 }

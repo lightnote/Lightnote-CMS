@@ -18,14 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote\Routing;
 
 /**
- * Control class
- *
- *
+ * RouteCollection class
  */
-class Control
+class RouteCollection extends \Lightnote\Collection
 {
     
 }

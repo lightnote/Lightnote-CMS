@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2007-2010, Dmitry Monin <dmitry.monin [at] lightnote [dot] org>
  * Permission to use and/or distribute this software for
@@ -18,14 +19,44 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote\Http;
 
 /**
- * Control class
- *
- *
+ * NameValueCollection class
  */
-class Control
+class NameValueCollection implements \ArrayAccess
 {
-    
+
+    private $data = null;
+
+    public function  __construct($data = array())
+    {
+        $this->data = $data;
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        $this->data[$offset] = $value;
+    }
+
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->data);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->data[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return isset($this->data[$offset]) ? $this->data[$offset] : null;
+    }
+
+    public function toString()
+    {
+        return http_build_query($this->data);
+    }
+
 }

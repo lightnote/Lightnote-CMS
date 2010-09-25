@@ -23,7 +23,7 @@ namespace Lightnote\Repository;
 /**
  * IRepository interface
  *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ *
  */
 interface IRepository
 {

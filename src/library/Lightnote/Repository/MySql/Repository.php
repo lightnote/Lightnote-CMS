@@ -23,7 +23,7 @@ namespace Lightnote\Repository\MySql;
 /**
  * Repository class
  *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ *
  */
 abstract class Repository implements \Lightnote\Repository\IRepository
 {

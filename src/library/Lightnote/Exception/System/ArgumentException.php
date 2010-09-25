@@ -18,14 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote;
+namespace Lightnote\Exception\System;
 
 /**
- * IBootstrap interface
- *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ * ArgumentException class
  */
-interface IBootstrap
+class ArgumentException extends \Lightnote\Exception
 {
-    function run();
+    
 }

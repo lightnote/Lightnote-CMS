@@ -1,14 +1,13 @@
 <?php
 
-class Bootstrap implements IBootstrap
+use Lightnote\Routing;
+
+class Bootstrap extends Lightnote\Bootstrap
 {
-    private function registerRoutes()
+    protected function registerRoutes()
     {
         
     }
 
-    public function run()
-    {
-        $this->registerRoutes();
-    }
+    
 }

@@ -12,7 +12,11 @@ require_once dirname(__FILE__) . '/../../../../src/library/Lightnote/Routing/Rou
  */
 class RouteTest extends \PHPUnit_Framework_TestCase
 {
-
+    /**
+     *
+     * @var \Lightnote\Mvc\RouteHandler
+     */
+    private $routeHandler;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -20,7 +24,9 @@ class RouteTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        
+        $httpContext = new \Lightnote\Http\HttpContext();
+        $httpContext->request = \Lightnote\Http\HttpRequest::getEmpty();
+        $this->routeHandler = new \Lightnote\Mvc\RouteHandler($httpContext);
     }
 
     /**
@@ -32,31 +38,169 @@ class RouteTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    /**
-     * @todo Implement testMatch().
-     */
     public function testMatch()
     {
+
+
         $route = new Route(
-            'route1',
             'category/abc-{language}-{country}/{controller}/{action}/{id}',
-            array(
-                'controller' => 'DefaultController',
-                'action' => 'List'
+            $this->routeHandler,
+            new RouteConfig(
+                array(),
+                array(
+                    'controller' => 'DefaultController',
+                    'action' => 'list',
+                    'id' => null
+                )
             )
         );
 
-        $this->assertTrue(
-            $route->match('category/abc-de-DE')
-        );
+        $url = 'category/abc-de-DE';
+        $this->assertTrue($route->match($url));
+        $data = $route->getRouteData($url);
+        $this->assertEquals($data['controller'], 'DefaultController');
+        $this->assertEquals($data['action'], 'list');
+        $this->assertEquals($data['country'], 'DE');
+        $this->assertEquals($data['language'], 'de');
 
-        /*$this->assertTrue(
+        $this->assertTrue(
             $route->match('category/abc-de-DE/MyController')
         );
 
         $this->assertTrue(
             $route->match('category/abc-de-DE/MyController/MyAction')
-        );*/
+        );
+
+        $url = 'category/abc-de-DE/MyController/myAction/someId';
+        $this->assertTrue($route->match($url));
+        $data = $route->getRouteData($url);
+        $this->assertEquals($data['controller'], 'MyController');
+        $this->assertEquals($data['action'], 'myAction');
+        $this->assertEquals($data['country'], 'DE');
+        $this->assertEquals($data['language'], 'de');
+        $this->assertEquals($data['id'], 'someId');
+
+        $this->assertFalse(
+            $route->match('category/abc-de-DE/MyController/MyAction/someId/something')
+        );
+    }
+
+    public function testCatchAll()
+    {
+        $route = new Route(
+            'category/{test}/{*catchall}',
+            $this->routeHandler,
+            new RouteConfig(
+                array(),
+                array(
+                    'controller' => 'DefaultController',
+                    'action' => 'List'
+                )
+            )
+        );
+
+        $this->assertTrue($route->match('/category/myVal/bla/bla/bla'));
+
+        $routeData = $route->getRouteData('/category/myVal/bla/bla/bla');
+        $this->assertEquals($routeData['catchall'], 'bla/bla/bla');
+
+        $this->assertTrue($route->match('/category/myVal'));
+        $routeData = $route->getRouteData('/category/myVal');
+        $this->assertEquals($routeData['catchall'], '');
+        
+    }
+
+    public function testConstrains()
+    {
+        $route = new Route(
+            'category/{id}',
+            $this->routeHandler,
+            new RouteConfig(
+                array(),
+                array(
+                    'controller' => 'DefaultController',
+                    'action' => 'List'
+                ),
+                array(
+                    new Constrain\RegExpConstrain('id', '/^[0-9]+$/')
+                )
+            )
+        );
+
+        $this->assertTrue($route->match('category/123'));
+        $this->assertFalse($route->match('category/123d'));
+    }
+
+    public function testExceptions()
+    {
+        try
+        {
+            $route = new Route(
+                'category/{*id}/{test}',
+                $this->routeHandler
+            );
+            $this->assertFalse(true);
+        }
+        catch(\Lightnote\Exception\System\ArgumentException $exc)
+        {
+            $this->assertFalse(false);
+        }
+        catch(Exception $exc)
+        {
+            $this->assertFalse(true);
+        }
+
+        try
+        {
+            $route = new Route(
+                'category/{*id}/aaa',
+                $this->routeHandler
+            );
+            $this->assertFalse(true);
+        }
+        catch(\Lightnote\Exception\System\ArgumentException $exc)
+        {
+            $this->assertFalse(false);
+        }
+        catch(Exception $exc)
+        {
+            $this->assertFalse(true);
+        }
+
+
+        try
+        {
+            $route = new Route(
+                '~category',
+                $this->routeHandler
+            );
+            $this->assertFalse(true);
+        }
+        catch(\Lightnote\Exception\System\ArgumentException $exc)
+        {
+            $this->assertFalse(false);
+        }
+        catch(Exception $exc)
+        {
+            $this->assertFalse(true);
+        }
+
+        try
+        {
+            $route = new Route(
+                '/category',
+                $this->routeHandler
+            );
+            $this->assertFalse(true);
+        }
+        catch(\Lightnote\Exception\System\ArgumentException $exc)
+        {
+            $this->assertFalse(false);
+        }
+        catch(Exception $exc)
+        {
+            $this->assertFalse(true);
+        }
     }
 
 }

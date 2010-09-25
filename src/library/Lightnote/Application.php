@@ -23,11 +23,22 @@ namespace Lightnote;
 /**
  * Application class
  *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ * @property-read $httpContext
+ * @property-read $environment
  */
-class Application
+class Application extends Attribute
 {
+    /**
+     *
+     * @var string
+     */
     private $environment = 'production';
+
+    /**
+     *
+     * @var Bootstrap
+     */
+    private $bootstrap = null;
     
     /**
      *
@@ -35,9 +46,46 @@ class Application
      */
     private $config = null;
 
+    /**
+     *
+     * @var Http\HttpContext
+     */
+    private $httpContext = null;
+
     public function __construct()
     {
         
+    }
+
+    public function getHttpContext()
+    {
+        if($this->httpContext)
+        {
+            return $this->httpContext;
+        }
+        
+        $this->httpContext = new Http\HttpContext();        
+        $this->httpContext->session = new Session();
+        $this->httpContext->request = $this->getRequest();
+
+        return $this->httpContext;
+    }
+
+    public function getEnvironment()
+    {
+        return $this->environment;
+    }
+
+    private function getRequest()
+    {
+        if(\php_sapi_name () != 'cli')
+        {
+            return Http\HttpRequest::getFromServer();
+        }
+        else
+        {
+            return Http\HttpRequest::getEmpty();
+        }        
     }
 
     public function run()
@@ -50,18 +98,27 @@ class Application
         $this->config = new Config\IniConfig(APPLICATION_PATH . '/config/config.ini');
         $this->config->setEnvironment(\APPLICATION_ENV);
 
-        $bootstrapFile = APPLICATION_PATH . '/Bootstrap.php';
+        $httpContext = $this->getHttpContext();
+
         
+        $this->runBootstrap();        
+    }
+
+    private function runBootstrap()
+    {
+        $bootstrapClass = 'Lightnote\Bootstrap';
+        $bootstrapFile = APPLICATION_PATH . '/Bootstrap.php';
         if(file_exists($bootstrapFile))
         {
             include_once $bootstrapFile;
-            if(class_exists('Bootstrap'))
+            if(class_exists('\Bootstrap'))
             {
-                $bootstrap = new Bootstrap();
-                $bootstrap->run();
+                $bootstrapClass = '\Bootstrap';
             }
         }
-        
+
+        $this->bootstrap = new $bootstrapClass($this);
+        $this->bootstrap->run();
     }
 
     public function setEnvironment($environment)

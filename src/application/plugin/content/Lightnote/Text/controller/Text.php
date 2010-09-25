@@ -18,14 +18,14 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote\Plugin\Content\Text;
 
 /**
- * Control class
+ * Controller class
  *
  *
  */
-class Control
+class Controller
 {
     
 }

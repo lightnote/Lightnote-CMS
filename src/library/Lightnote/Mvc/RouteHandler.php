@@ -18,14 +18,30 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote\Mvc;
 
 /**
- * Control class
- *
- *
+ * RouteHandler class
  */
-class Control
+class RouteHandler implements \Lightnote\Routing\IRouteHandler
 {
-    
+    /**
+     *
+     * @var \Lightnote\Http\HttpContext
+     */
+    private $httpContext = null;
+
+    public function __construct(\Lightnote\Http\HttpContext $httpContext)
+    {
+        $this->httpContext = $httpContext;
+    }
+
+    /**
+     *
+     * @return \Lightnote\Http\HttpContext
+     */
+    public function getHttpContext()
+    {
+        return $this->httpContext;
+    }
 }

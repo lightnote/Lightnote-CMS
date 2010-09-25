@@ -23,17 +23,20 @@ namespace Lightnote;
 /**
  * Registry class
  *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ *
  */
 class Registry
 {
+    private static $data = array();
+
+
     public static function get($key)
     {
-
+        return self::$data[$key];
     }
 
     public static function set($key, $value)
     {
-        
+        self::$data[$key] = $value;
     }
 }

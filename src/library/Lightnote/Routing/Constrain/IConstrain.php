@@ -18,14 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\DomainModel\UI;
+namespace Lightnote\Routing\Constrain;
 
 /**
- * Control class
- *
- *
+ * IContrain interface
  */
-class Control
+interface IConstrain
 {
-    
+    function match(\Lightnote\Http\HttpContext $httpContext, \Lightnote\Routing\Route $route, $values);
 }

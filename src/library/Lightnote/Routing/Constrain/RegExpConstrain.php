@@ -18,16 +18,49 @@
  * SOFTWARE.
  */
 
-namespace Lightnote;
+namespace Lightnote\Routing\Constrain;
 
 /**
- * ITemplate interface
+ * RegExpContrain class
  *
- * @author Monin Dmitry <dmitry.monin [at] lightnote [dot] org> on 19.09.2010
+ *
  */
-interface ITemplate
+class RegExpConstrain implements IConstrain
 {
-    function assign($key, $value);
-    function clear($key = null);
-    function fetch();
+    /**
+     *
+     * @var string
+     */
+    private $paramName;
+
+    /**
+     *
+     * @var string
+     */
+    private $pattern;
+
+
+
+    /**
+     *
+     * @param string $paramName name of parameter to be validated
+     * @param string $pattern Regular expression in PECL format, i.e. /^[a-z]+$/
+     */
+    public function __construct($paramName, $pattern)
+    {
+        $this->paramName = $paramName;
+        $this->pattern = $pattern;
+    }
+
+    /**
+     *
+     * @param \Lightnote\Http\HttpContext $httpContext
+     * @param \Lightnote\Routing\Route $route
+     * @param string $paramName
+     * @param array $values
+     */
+    public function match(\Lightnote\Http\HttpContext $httpContext, \Lightnote\Routing\Route $route, $values)
+    {
+        return \preg_match($this->pattern, (string)$values[$this->paramName]);
+    }
 }

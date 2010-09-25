@@ -18,6 +18,8 @@
  * SOFTWARE.
  */
 
+namespace Lightnote\Mvc;
+
 class Controller
 {
     
