@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Lightnote2" default="build" basedir="../../">
+    <property name="SRC_DIR" value="src" description="Source folder" />
+    <property name="SRC_CSS_DIR" value="${SRC_DIR}/htdocs/css" description="CSS source folder" />
+    <property name="SRC_JS_DIR" value="${SRC_DIR}/htdocs/js" description="JavaScript source folder" />
+    <property name="YUI_COMPRESSOR" value="${SRC_DIR}/build/yuicompressor-2.4.2.jar" description="YUICompressor" />
+    <property name="ASSET_DIR" value="${SRC_DIR}/htdocs/cms/asset" description="YUI" />
+    <property name="CSS_DIR" value="${ASSET_DIR}/css" description="CSS Files" />
+    <property name="JS_DIR" value="${ASSET_DIR}/js" description="JS Files" />
+    <property name="YUI_DIR" value="${ASSET_DIR}/js/YUI" description="YUI" />
+    
+    <fileset id="css-min" dir="${YUI_DIR}">
+        <include name="cssreset/reset.css" />
+        <include name="cssfonts/fonts.css" />
+    </fileset>
+
+    <fileset id="yui-min" dir="${YUI_DIR}">
+        <include name="yui/yui-base.js" />
+        <include name="yui/yui-later.js" />
+        <include name="yui/yui-throttle.js" />
+        
+        <include name="oop/oop.js" />
+        <include name="classmanager/classmanager.js" />
+
+        <include name="dom/dom-base.js" />
+        <include name="dom/dom-screen.js" />
+        <include name="dom/dom-style.js" />
+        <include name="dom/selector.js" />
+        <include name="dom/selector-native.js" />
+        
+        <include name="event/event-base.js" />
+        <include name="event/event-synthetic.js" />
+        <include name="event/event-resize.js" />
+        <include name="event/event-mouseenter.js" />
+
+        <include name="event-custom/event-custom-base.js" />
+        <include name="event-custom/event-custom-complex.js" />
+
+        <include name="attribute/attribute-base.js" />
+        
+        <include name="pluginhost/pluginhost.js" />
+
+        <include name="base/base-base.js" />
+        <include name="base/base-build.js" />
+        <include name="base/base-pluginhost.js" />
+        
+        <include name="node/node-base.js" />
+        <include name="node/node-event-delegate.js" />
+        <include name="node/node-pluginhost.js" />
+        <include name="node/node-screen.js" />
+        <include name="node/node-style.js" />
+
+        <include name="anim/anim-base.js" />
+        <include name="anim/anim-xy.js" />
+
+        <include name="dd/dd-constrain.js" />
+        <include name="dd/dd-ddm.js" />
+        <include name="dd/dd-ddm-base.js" />
+        <include name="dd/dd-ddm-drop.js" />
+        <include name="dd/dd-delegate.js" />
+        <include name="dd/dd-drag.js" />
+        <include name="dd/dd-drop.js" />
+        <include name="dd/dd-proxy.js" />
+        <include name="dd/dd-scroll.js" />
+    </fileset>
+
+    <target name="build-yui">
+        <!-- CSS FILES -->
+        <echo message="Building CSS ${YUI}" />
+        <concat destfile="${CSS_DIR}/style.css">
+            <fileset refid="css-min" />
+        </concat>
+        <apply executable="java" parallel="false" verbose="true" dest="${CSS_DIR}">
+            <fileset dir="${CSS_DIR}">
+                <include name="style.css" />
+            </fileset>
+            <arg line="-jar" />
+            <arg path="${YUI_COMPRESSOR}" />
+            <arg value="--charset" />
+            <arg value="UTF-8" />
+            <arg value="-o" />
+            <targetfile />
+            <mapper type="glob" from="style.css" to="style-min.css" />
+        </apply>
+        <delete file="${CSS_DIR}/style.css" />
+
+        <!-- YUI FILES -->
+        <echo message="Building YUI ${YUI}" />
+        <concat destfile="${JS_DIR}/yui.js">
+            <fileset refid="yui-min" />
+        </concat>
+        
+        <apply executable="java" parallel="false" verbose="true" dest="${JS_DIR}">
+            <fileset dir="${JS_DIR}">
+                <include name="yui.js" />
+            </fileset>
+            <arg line="-jar" />
+            <arg path="${YUI_COMPRESSOR}" />
+            <arg value="--charset" />
+            <arg value="UTF-8" />
+            <arg value="-o" />
+            <targetfile />
+            <mapper type="glob" from="yui.js" to="yui-min.js" />
+        </apply>
+        <delete file="${JS_DIR}/yui.js" />
+    </target>
+
+    <target name="build" depends="build-yui">
+        
+    </target>
+
+</project>
