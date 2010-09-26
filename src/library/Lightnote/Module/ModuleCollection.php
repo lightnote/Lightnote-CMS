@@ -18,27 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote\Module;
 
-class Controller
+/**
+ * ModuleCollection class
+ */
+class ModuleCollection extends \Lightnote\Collection
 {
-    /**
-     *
-     * @var \Lightnote\Http\NameValueCollection
-     */
-    public $viewData = null;
-
-    /**
-     *
-     * @var array
-     */
-    protected $routeData = null;
-
-    /**
-     *
-     * @var \Lightnote\Http\HttpContext
-     */
-    protected $httpContext;
-
     
 }

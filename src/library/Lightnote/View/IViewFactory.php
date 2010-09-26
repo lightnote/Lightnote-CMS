@@ -18,27 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote\View;
 
-class Controller
+/**
+ * IViewFactory interface
+ */
+interface IViewFactory
 {
-    /**
-     *
-     * @var \Lightnote\Http\NameValueCollection
-     */
-    public $viewData = null;
-
-    /**
-     *
-     * @var array
-     */
-    protected $routeData = null;
-
-    /**
-     *
-     * @var \Lightnote\Http\HttpContext
-     */
-    protected $httpContext;
-
-    
+    function getView($controller, $action);
 }

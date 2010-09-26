@@ -23,9 +23,9 @@ namespace Lightnote\Routing;
 /**
  * Route class
  *
- *
+ * @property-read $namespaces
  */
-class Route implements IRoute
+class Route extends \Lightnote\Attribute implements IRoute
 {
     const GROUP_REGEXP = '/\{([a-z0-9_-]+)\}/i';
     const CATCH_ALL_REGEXP = '/\{\*([a-z0-9_-]+)\}$/i';
@@ -90,7 +90,7 @@ class Route implements IRoute
         $this->routeHandler = $routeHandler;
         if($config != null)
         {
-            $this->namespaces = $config->namespace;
+            $this->namespaces = $config->namespaces;
             $this->data = $config->params;
             $this->constrains = $config->constrains;
         }
@@ -118,6 +118,11 @@ class Route implements IRoute
         $this->dataKeys = $groupMatches[1];
 
         return $this->dataKeys;
+    }
+
+    public function getNamespaces()
+    {
+        return $this->namespaces;
     }
 
     /**

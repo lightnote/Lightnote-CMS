@@ -2,10 +2,11 @@
 
 <project name="Lightnote2" default="build" basedir="../../">
     <property name="SRC_DIR" value="src" description="Source folder" />
-    <property name="SRC_CSS_DIR" value="${SRC_DIR}/htdocs/css" description="CSS source folder" />
-    <property name="SRC_JS_DIR" value="${SRC_DIR}/htdocs/js" description="JavaScript source folder" />
+    <property name="BACKEND_DIR" value="${SRC_DIR}/application/module/Lightnote/Backend" description="Source folder" />
+    <property name="SRC_CSS_DIR" value="${BACKEND_DIR}/asset/css" description="CSS source folder" />
+    <property name="SRC_JS_DIR" value="${BACKEND_DIR}/asset/js" description="JavaScript source folder" />
     <property name="YUI_COMPRESSOR" value="${SRC_DIR}/build/yuicompressor-2.4.2.jar" description="YUICompressor" />
-    <property name="ASSET_DIR" value="${SRC_DIR}/htdocs/cms/asset" description="YUI" />
+    <property name="ASSET_DIR" value="${BACKEND_DIR}/asset/" description="Asset DIR" />
     <property name="CSS_DIR" value="${ASSET_DIR}/css" description="CSS Files" />
     <property name="JS_DIR" value="${ASSET_DIR}/js" description="JS Files" />
     <property name="YUI_DIR" value="${ASSET_DIR}/js/YUI" description="YUI" />

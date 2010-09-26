@@ -18,27 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote\Helper;
 
-class Controller
+/**
+ * HtmlHelper class
+ */
+class HtmlHelper
 {
-    /**
-     *
-     * @var \Lightnote\Http\NameValueCollection
-     */
-    public $viewData = null;
-
-    /**
-     *
-     * @var array
-     */
-    protected $routeData = null;
-
-    /**
-     *
-     * @var \Lightnote\Http\HttpContext
-     */
-    protected $httpContext;
-
     
 }

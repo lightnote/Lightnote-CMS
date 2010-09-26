@@ -75,6 +75,8 @@ class HttpRequest
         $request->server = new NameValueCollection();
         $request->files = new NameValueCollection();
         $request->cookies = new NameValueCollection();
+
+        return $request;
     }
 
     public static function getFromServer()
@@ -89,8 +91,11 @@ class HttpRequest
         $request->post = new NameValueCollection($_POST);
         $request->server = new NameValueCollection($_SERVER);
         
+        
         // @todo implement setting of files
         // @todo implement setting of cookies
+
+        return $request;
     }
 
     public function __get($key)

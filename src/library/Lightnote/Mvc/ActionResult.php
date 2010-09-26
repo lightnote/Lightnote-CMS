@@ -20,7 +20,10 @@
 
 namespace Lightnote\Mvc;
 
-class ActionResult
+abstract class ActionResult implements IActionResult
 {
-    
+    abstract public function executeResult(ControllerContext $context)
+    {
+        
+    }
 }

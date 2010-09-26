@@ -38,22 +38,43 @@ abstract class Bootstrap
      */
     public $routes;
 
+    /**
+     *
+     * @var Module\ModuleCollection
+     */
+    public $modules;
+
     public function __construct(Application $application)
     {
         $this->application = $application;
         $this->routes = new Routing\RouteCollection();
+        $this->modules = new Module\ModuleCollection();
+    }
+
+    protected function registerModules()
+    {
+        $handler = new Mvc\RouteHandler($this->application->httpContext);
+        $backendModule = new Module\BackendModule(
+            'Lightnote\Backend',
+            $this->application->config->getProperty('lightnote.module.backend')
+        );
+        $backendModule->setupRoutes($this->routes, $handler);
+
+        $this->modules[] = $backendModule;
+
+
+        
     }
 
     protected function registerRoutes()
-    {
+    {        
         $handler = new Mvc\RouteHandler($this->application->httpContext);
-
-        $this->routes[] = new Routing\Route($url, $handler);
     }
     
 
     public function run()
     {
+        $this->registerModules();
         $this->registerRoutes();
     }
 }

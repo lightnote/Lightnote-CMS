@@ -18,27 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote\Backend;
 
-class Controller
+/**
+ * DefaultController class
+ */
+class DefaultController
 {
-    /**
-     *
-     * @var \Lightnote\Http\NameValueCollection
-     */
-    public $viewData = null;
-
-    /**
-     *
-     * @var array
-     */
-    protected $routeData = null;
-
-    /**
-     *
-     * @var \Lightnote\Http\HttpContext
-     */
-    protected $httpContext;
-
     
 }

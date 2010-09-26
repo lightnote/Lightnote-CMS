@@ -18,27 +18,23 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote\Module;
 
-class Controller
+/**
+ * BackendModule class
+ */
+class BackendModule extends Module
 {
-    /**
-     *
-     * @var \Lightnote\Http\NameValueCollection
-     */
-    public $viewData = null;
-
-    /**
-     *
-     * @var array
-     */
-    protected $routeData = null;
-
-    /**
-     *
-     * @var \Lightnote\Http\HttpContext
-     */
-    protected $httpContext;
-
-    
+    public function setupRoutes(\Lightnote\Routing\RouteCollection $routes, \Lightnote\Mvc\RouteHandler $routeHandler)
+    {
+        // @todo specify config variable for prefix
+        $routes[] = new \Lightnote\Routing\Route(
+            'backend/{controller}/{action}',
+            $routeHandler,
+            new \Lightnote\Routing\RouteConfig(
+                array($this->namespace),
+                array('controller' => 'Default', 'action' => 'index')
+            )
+        );
+    }
 }

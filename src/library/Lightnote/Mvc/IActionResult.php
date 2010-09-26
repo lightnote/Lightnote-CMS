@@ -20,25 +20,10 @@
 
 namespace Lightnote\Mvc;
 
-class Controller
+/**
+ * IActionResult interface
+ */
+interface IActionResult
 {
-    /**
-     *
-     * @var \Lightnote\Http\NameValueCollection
-     */
-    public $viewData = null;
-
-    /**
-     *
-     * @var array
-     */
-    protected $routeData = null;
-
-    /**
-     *
-     * @var \Lightnote\Http\HttpContext
-     */
-    protected $httpContext;
-
-    
+    function executeResult(ControllerContext $context);
 }

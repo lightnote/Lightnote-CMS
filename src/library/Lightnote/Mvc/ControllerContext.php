@@ -20,25 +20,26 @@
 
 namespace Lightnote\Mvc;
 
-class Controller
+/**
+ * ControllerContext class
+ */
+class ControllerContext
 {
     /**
      *
-     * @var \Lightnote\Http\NameValueCollection
+     * @var Controller
      */
-    public $viewData = null;
-
-    /**
-     *
-     * @var array
-     */
-    protected $routeData = null;
+    public $controller = null;
 
     /**
      *
      * @var \Lightnote\Http\HttpContext
      */
-    protected $httpContext;
+    public $httpContext = null;
 
-    
+    /**
+     *
+     * @var \Lightnote\Routing\RouteData
+     */
+    public $routeData = null;
 }

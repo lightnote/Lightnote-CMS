@@ -25,5 +25,22 @@ namespace Lightnote\Routing;
  */
 class RouteCollection extends \Lightnote\Collection
 {
-    
+    /**
+     *
+     * @param string $url
+     * @return Route
+     */
+    public function findMatching($url)
+    {
+        /* @var $route Route */
+        foreach($this->data as $route)
+        {
+            if($route->match($url))
+            {
+                return $route;
+            }
+        }
+
+        return null;
+    }
 }

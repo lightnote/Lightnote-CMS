@@ -26,7 +26,7 @@ namespace Lightnote;
  */
 class Collection implements \ArrayAccess, \Iterator, \Countable
 {
-    private $currentIndex, $data;
+    protected $currentIndex, $data;
 
     public function __construct($data = array())
     {

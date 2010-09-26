@@ -25,6 +25,7 @@ namespace Lightnote;
  *
  * @property-read $httpContext
  * @property-read $environment
+ * @property-read $config
  */
 class Application extends Attribute
 {
@@ -55,6 +56,11 @@ class Application extends Attribute
     public function __construct()
     {
         
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     public function getHttpContext()
@@ -98,6 +104,8 @@ class Application extends Attribute
         $this->config = new Config\IniConfig(APPLICATION_PATH . '/config/config.ini');
         $this->config->setEnvironment(\APPLICATION_ENV);
 
+        Module\Module::$modulesPath = APPLICATION_PATH . '/module';
+
         $httpContext = $this->getHttpContext();
 
         
@@ -119,6 +127,31 @@ class Application extends Attribute
 
         $this->bootstrap = new $bootstrapClass($this);
         $this->bootstrap->run();
+
+        $routes = $this->bootstrap->routes;
+        $url = $this->httpContext->request->server['REQUEST_URI'];
+        $route = $routes->findMatching($url);
+        if($route == null)
+        {
+            throw new Exception('No matching route found.');
+        }
+
+        $routeData = $route->getRouteData($url);
+
+        $namespaces = $route->namespaces;
+        $controller = $routeData['controller'];
+        $action = $routeData['action'];
+
+        foreach($namespaces as $namespace)
+        {
+            $controllerClass = $namespace . '\\' . $controller . 'Controller';
+            if(class_exists($controllerClass))
+            {
+                $controller = new $controllerClass();
+                
+            }
+        }
+
     }
 
     public function setEnvironment($environment)

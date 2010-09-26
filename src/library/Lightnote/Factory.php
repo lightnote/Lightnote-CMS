@@ -52,4 +52,9 @@ class Factory
     {
         
     }
+
+    public function getView($controller, $view)
+    {
+        
+    }
 }
