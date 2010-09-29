@@ -36,12 +36,12 @@ class PhpView implements \Lightnote\IView
 
     public function assign($key, $value = null)
     {
-        if(is_array($key))
+        if($key instanceof \Lightnote\Http\NameValueCollection)
         {
             foreach($key as $k=>$v)
             {
                 $this->data[$k] = $v;
-            }
+            }            
         }
         else
         {
@@ -65,6 +65,7 @@ class PhpView implements \Lightnote\IView
     public function fetch()
     {
         $viewData = $this->data;
+        
         ob_start();
         include_once $this->file;
         $content = ob_get_contents();

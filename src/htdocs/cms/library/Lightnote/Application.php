@@ -23,9 +23,10 @@ namespace Lightnote;
 /**
  * Application class
  *
- * @property-read $httpContext
- * @property-read $environment
- * @property-read $config
+ * @property-read Http\HttpContext $httpContext
+ * @property-read string $environment
+ * @property-read Config $config
+ * @property-read Factory $factory
  */
 class Application extends Attribute
 {
@@ -53,6 +54,13 @@ class Application extends Attribute
      */
     private $httpContext = null;
 
+
+    /**
+     *
+     * @var Factory
+     */
+    protected $factory = null;
+
     /**
      *
      * @param Config $config 
@@ -71,8 +79,8 @@ class Application extends Attribute
      */
     private function executeController($namespaces, $controllerName, $routeData)
     {        
-        $requestContext = new Routing\RequestContext($this->getHttpContext(), $routeData);
-
+        $executionContext = new Mvc\ExecutionContext($this->getHttpContext(), $routeData, $this->factory);
+        
         foreach($namespaces as $namespace)
         {
             $controllerClass = $namespace . '\\' . $controllerName . 'Controller';
@@ -80,7 +88,7 @@ class Application extends Attribute
             if(class_exists($controllerClass))
             {
                 $controller = new $controllerClass();
-                $controller->execute($requestContext);
+                $controller->execute($executionContext);
                 return true;
             }
         }
@@ -88,6 +96,10 @@ class Application extends Attribute
         return false;
     }
 
+    /**
+     *
+     * @return Config
+     */
     public function getConfig()
     {
         return $this->config;
@@ -107,11 +119,28 @@ class Application extends Attribute
         return $this->httpContext;
     }
 
+    /**
+     *
+     * @return string
+     */
     public function getEnvironment()
     {
         return $this->environment;
     }
 
+    /**
+     *
+     * @return Factory
+     */
+    public function getFactory()
+    {
+        return $this->factory;
+    }
+
+    /**
+     *
+     * @return \HttpRequest
+     */
     private function getRequest()
     {
         if(\php_sapi_name () != 'cli')
@@ -148,7 +177,10 @@ class Application extends Attribute
 
         Loader::$modulesPath = APPLICATION_PATH . '/module';
 
+        $this->factory = new Factory($this->getConfig());
+
         $this->runBootstrap();
+
 
         // Getting route
         $url = $this->httpContext->request->server['REQUEST_URI'];
@@ -189,6 +221,10 @@ class Application extends Attribute
         $this->bootstrap->run();        
     }
 
+    /**
+     *
+     * @param string $environment
+     */
     public function setEnvironment($environment)
     {
         $this->environment = $environment;

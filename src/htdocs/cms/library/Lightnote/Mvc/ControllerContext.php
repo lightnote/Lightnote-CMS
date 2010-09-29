@@ -23,7 +23,7 @@ namespace Lightnote\Mvc;
 /**
  * ControllerContext class
  */
-class ControllerContext
+class ControllerContext extends ExecutionContext
 {
     /**
      *
@@ -33,15 +33,15 @@ class ControllerContext
 
     /**
      *
-     * @var \Lightnote\Http\HttpContext
+     * @var string
      */
-    public $httpContext = null;
+    public $viewDir = '';
 
-    /**
-     *
-     * @var \Lightnote\Routing\RouteData
-     */
-    public $routeData = null;
 
-    
+    public function __construct(\Lightnote\Http\HttpContext $httpContext, \Lightnote\Routing\RouteData $routeData, \Lightnote\View\IViewFactory $viewFactory, Controller $controller, $viewDir)
+    {
+        parent::__construct($httpContext, $routeData, $viewFactory);
+        $this->controller = $controller;
+        $this->viewDir = $viewDir;
+    }
 }

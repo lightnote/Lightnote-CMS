@@ -25,11 +25,22 @@ namespace Lightnote;
  *
  *
  */
-class Factory
+class Factory implements View\IViewFactory
 {
-    public function __construct($config)
+    /**
+     *
+     * @var \Lightnote\Config
+     */
+    protected $config;
+
+
+    /**
+     *
+     * @param \Lightnote\Config $config 
+     */
+    public function __construct(\Lightnote\Config $config)
     {
-        
+        $this->config = $config;
     }
 
     /**
@@ -53,8 +64,8 @@ class Factory
         
     }
 
-    public function getView($controller, $view)
+    public function getView($path)
     {
-        
+        return new \Lightnote\View\PhpView($path);
     }
 }

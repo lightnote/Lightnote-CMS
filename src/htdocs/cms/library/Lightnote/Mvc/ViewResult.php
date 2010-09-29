@@ -27,24 +27,25 @@ class ViewResult extends ActionResult
 {
     private $name = '';
 
-    public function __construct($viewName = '')
+    public function __construct($name)
     {
-        $this->name = $viewName;
+        $this->name = $name;
     }
 
     public function executeResult(ControllerContext $context)
     {
         $controller = $context->controller;
-        
+
         if(!$this->name)
         {
-            $this->name = $controller->routeData['action'];
+            $this->name = $context->routeData['controller'] . \DIRECTORY_SEPARATOR  . $context->routeData['action'];
         }
 
         $viewData = $controller->viewData;
 
-        // @todo change slashes
-        $view = new \Lightnote\View\PhpView('../view/' . $controller->routeData['controller'] . '/' . $this->name . '.phtml');
+        $path = $context->viewDir . \DIRECTORY_SEPARATOR . $this->name . '.phtml';
+
+        $view = $context->viewFactory->getView($path);
         $view->assign($viewData);
         echo $view->fetch();
     }

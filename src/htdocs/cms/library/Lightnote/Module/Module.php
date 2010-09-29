@@ -27,16 +27,11 @@ namespace Lightnote\Module;
  */
 class Module extends \Lightnote\Attribute
 {
-    const CONTROLLER_DIR = 'controller';
-
     const ASSET_DIR = 'asset';
     const ASSET_CSS_DIR = 'css';
     const ASSET_JS_DIR = 'js';
     const ASSET_IMG_DIR = 'img';
 
-    const VIEW_DIR = 'view';
-
-    public static $loadPath = 'module';
 
     /**
      *

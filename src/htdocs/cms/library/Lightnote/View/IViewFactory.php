@@ -25,5 +25,5 @@ namespace Lightnote\View;
  */
 interface IViewFactory
 {
-    function getView($controller, $action);
+    function getView($path);
 }

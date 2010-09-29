@@ -27,6 +27,20 @@ namespace Lightnote\Mvc;
 class Controller extends \Lightnote\Attribute
 {
     /**
+     * Path to controller
+     *
+     * @var string
+     */
+    public static $path = '';
+
+    /**
+     *
+     * @var string
+     */
+    const VIEW_DIR = '/../view';
+
+
+    /**
      *
      * @var \Lightnote\Http\NameValueCollection
      */
@@ -42,7 +56,14 @@ class Controller extends \Lightnote\Attribute
      *
      * @var \Lightnote\Http\HttpContext
      */
-    protected $httpContext;
+    protected $httpContext = null;
+
+    /**
+     *
+     * @var \Lightnote\View\IViewFactory
+     */
+    private $viewFactory = null;
+
 
     public function getRouteData()
     {
@@ -54,13 +75,13 @@ class Controller extends \Lightnote\Attribute
         return $this->httpContext;
     }
 
-    public function execute(\Lightnote\Routing\RequestContext $requestContext)
+    public function execute(ExecutionContext $executionContext)
     {
         $this->viewData = new \Lightnote\Http\NameValueCollection();
-        $this->routeData = $requestContext->routeData;
-        $this->httpContext = $requestContext->httpContext;
-
-        $action = $requestContext->routeData['action'];
+        $this->routeData = $executionContext->routeData;
+        $this->httpContext = $executionContext->httpContext;
+        
+        $action = $executionContext->routeData['action'];
         if(empty($action))
         {
             throw new \Lightnote\Exception('Route action can not be empty.');
@@ -70,7 +91,7 @@ class Controller extends \Lightnote\Attribute
 
         if(\method_exists($this, $methodName))
         {
-            $dataTokens = $requestContext->routeData->dataTokens;
+            $dataTokens = $executionContext->routeData->dataTokens;
             unset($dataTokens['controller'], $dataTokens['action']);
 
             /* @var $actionResult IActionResult */
@@ -80,18 +101,23 @@ class Controller extends \Lightnote\Attribute
                 throw new \Lightnote\Exception('Result of action must be an instance of IActionResult.');
             }
 
-            $controllerContext = new ControllerContext();
-            $controllerContext->controller = $this;
-            $controllerContext->httpContext = $requestContext->httpContext;
-            $controllerContext->routeData = $requestContext->routeData;
 
+            $viewDir = self::$path . self::VIEW_DIR;;
+            $controllerContext = new ControllerContext(
+                    $executionContext->httpContext,
+                    $executionContext->routeData,
+                    $executionContext->viewFactory,
+                    $this,
+                    $viewDir
+            );
+            
             $actionResult->executeResult($controllerContext);
         }
     }
 
-    protected function view()
-    {
-        return new ViewResult();
+    protected function view($viewName = '')
+    {        
+        return new ViewResult($viewName);
     }
     
 }

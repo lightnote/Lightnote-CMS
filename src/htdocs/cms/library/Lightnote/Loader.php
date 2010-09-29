@@ -27,6 +27,8 @@ namespace Lightnote;
  */
 class Loader
 {
+    const MODULE_CONTROLLER_DIR = 'controller';
+
     public static $modulesPath = '';
 
     public static function load($className)
@@ -45,11 +47,12 @@ class Loader
     public static function loadModule($className)
     {
         $path = self::$modulesPath . \DIRECTORY_SEPARATOR . str_replace('\\', \DIRECTORY_SEPARATOR, $className);
-        $path = \preg_replace('/(.+(?:\\\|\/))([^\\/]+Controller)$/', '$1' . self::CONTROLLER_DIR  . '/$2.php', $path);
-
+        $path = \preg_replace('/(.+(?:\\\|\/))([^\\/]+Controller)$/', '$1' . self::MODULE_CONTROLLER_DIR  . '/$2.php', $path);
+        
         if(file_exists($path))
         {
             include_once $path;
+            $className::$path = dirname($path);            
         }
     }
 }

@@ -18,16 +18,35 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Backend;
+namespace Lightnote\Mvc;
 
 /**
- * WebsiteController class
+ * ExecutionContext class
  */
-class WebsiteController extends \Lightnote\Mvc\Controller
+class ExecutionContext
 {
-    public function indexAction()
+    /**
+     *
+     * @var \Lightnote\Http\HttpContext
+     */
+    public $httpContext;
+
+    /**
+     *
+     * @var RouteData
+     */
+    public $routeData;
+
+    /**
+     *
+     * @var \Lightnote\View\IViewFactory
+     */
+    public $viewFactory;
+
+    public function __construct(\Lightnote\Http\HttpContext $httpContext, \Lightnote\Routing\RouteData $routeData, \Lightnote\View\IViewFactory $viewFactory)
     {
-        $this->viewData['test'] = 'Tester';
-        return $this->view();
+        $this->httpContext = $httpContext;
+        $this->routeData = $routeData;
+        $this->viewFactory = $viewFactory;
     }
 }

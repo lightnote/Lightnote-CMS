@@ -24,12 +24,13 @@ namespace Lightnote\Http;
 /**
  * NameValueCollection class
  */
-class NameValueCollection implements \ArrayAccess
+class NameValueCollection implements \Iterator, \ArrayAccess
 {
 
     private $data = null;
+    private $currentIndex = 0;
 
-    public function  __construct($data = array())
+    public function __construct($data = array())
     {
         $this->data = $data;
     }
@@ -57,6 +58,39 @@ class NameValueCollection implements \ArrayAccess
     public function toString()
     {
         return http_build_query($this->data);
+    }
+
+    public function rewind()
+    {
+        reset($this->data);
+    }
+
+    public function current()
+    {
+        return $this->data[key($this->data)];
+    }
+
+    public function key()
+    {
+
+        return key($this->data);
+    }
+
+    public function next()
+    {
+        next($this->data);
+    }
+
+    public function valid()
+    {
+        if ($this->offsetExists($this->key()))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }
