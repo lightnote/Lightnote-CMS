@@ -18,16 +18,29 @@
  * SOFTWARE.
  */
 
-namespace Lightnote;
+namespace Lightnote\Routing;
 
 /**
- * IView interface
- *
- *
+ * RequestContext class
  */
-interface IView
+class RequestContext
 {
-    function assign($key, $value);
-    function clear($key = null);
-    function fetch();
+    /**
+     *
+     * @var \Lightnote\Http\HttpContext
+     */
+    public $httpContext;
+
+    /**
+     *
+     * @var RouteData
+     */
+    public $routeData;
+
+    public function __construct(\Lightnote\Http\HttpContext $httpContext, RouteData $routeData)
+    {
+        $this->httpContext = $httpContext;
+        $this->routeData = $routeData;
+    }
+    
 }

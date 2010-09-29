@@ -53,9 +53,39 @@ class Application extends Attribute
      */
     private $httpContext = null;
 
-    public function __construct()
+    /**
+     *
+     * @param Config $config 
+     */
+    public function __construct(Config $config)
     {
-        
+        $this->config = $config;
+    }
+
+    /**
+     *
+     * @param array $namespaces
+     * @param string $controllerName
+     * @param Routing\RouteData $routeData
+     * @return bool
+     */
+    private function executeController($namespaces, $controllerName, $routeData)
+    {        
+        $requestContext = new Routing\RequestContext($this->getHttpContext(), $routeData);
+
+        foreach($namespaces as $namespace)
+        {
+            $controllerClass = $namespace . '\\' . $controllerName . 'Controller';
+
+            if(class_exists($controllerClass))
+            {
+                $controller = new $controllerClass();
+                $controller->execute($requestContext);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getConfig()
@@ -94,6 +124,21 @@ class Application extends Attribute
         }        
     }
 
+    /**
+     *
+     * @return Routing\Route
+     */
+    private function getRoute($url)
+    {
+        $routes = $this->bootstrap->routes;
+        $route = $routes->findMatching($url);
+        if($route == null)
+        {
+            throw new Exception('No matching route found.');
+        }
+        return $route;
+    }
+
     public function run()
     {
         if(!\defined('APPLICATION_PATH'))
@@ -101,19 +146,34 @@ class Application extends Attribute
             throw new Exception('APPLICATION_PATH constant is not defined.');
         }
 
-        $this->config = new Config\IniConfig(APPLICATION_PATH . '/config/config.ini');
-        $this->config->setEnvironment(\APPLICATION_ENV);
+        Loader::$modulesPath = APPLICATION_PATH . '/module';
 
-        Module\Module::$modulesPath = APPLICATION_PATH . '/module';
+        $this->runBootstrap();
 
-        $httpContext = $this->getHttpContext();
-
+        // Getting route
+        $url = $this->httpContext->request->server['REQUEST_URI'];
         
-        $this->runBootstrap();        
+        $route = $this->getRoute($url);
+        $routeData = $route->getRouteData($url);
+
+        $namespaces = $route->namespaces;
+        $controllerName = $routeData['controller'];
+        if(empty($controllerName))
+        {
+            throw new Exception('Route must have a \'controller\' property.');
+        }
+        
+        if(!$this->executeController($namespaces, $controllerName, $routeData))
+        {
+            throw new Exception('Controller ' . $controllerName . ' not found.');
+        }
     }
 
     private function runBootstrap()
     {
+        ini_set('error_reporting', E_ALL);
+        ini_set('display_errors', 'on');
+
         $bootstrapClass = 'Lightnote\Bootstrap';
         $bootstrapFile = APPLICATION_PATH . '/Bootstrap.php';
         if(file_exists($bootstrapFile))
@@ -126,32 +186,7 @@ class Application extends Attribute
         }
 
         $this->bootstrap = new $bootstrapClass($this);
-        $this->bootstrap->run();
-
-        $routes = $this->bootstrap->routes;
-        $url = $this->httpContext->request->server['REQUEST_URI'];
-        $route = $routes->findMatching($url);
-        if($route == null)
-        {
-            throw new Exception('No matching route found.');
-        }
-
-        $routeData = $route->getRouteData($url);
-
-        $namespaces = $route->namespaces;
-        $controller = $routeData['controller'];
-        $action = $routeData['action'];
-
-        foreach($namespaces as $namespace)
-        {
-            $controllerClass = $namespace . '\\' . $controller . 'Controller';
-            if(class_exists($controllerClass))
-            {
-                $controller = new $controllerClass();
-                
-            }
-        }
-
+        $this->bootstrap->run();        
     }
 
     public function setEnvironment($environment)

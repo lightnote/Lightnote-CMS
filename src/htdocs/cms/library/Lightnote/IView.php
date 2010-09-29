@@ -18,12 +18,16 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Backend;
+namespace Lightnote;
 
 /**
- * DefaultController class
+ * IView interface
+ *
+ *
  */
-class DefaultController
+interface IView
 {
-    
+    function assign($key, $value = null);
+    function clear($key = null);
+    function fetch();
 }

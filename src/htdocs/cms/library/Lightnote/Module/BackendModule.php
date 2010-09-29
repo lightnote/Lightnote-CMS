@@ -18,21 +18,23 @@
  * SOFTWARE.
  */
 
-namespace Lightnote;
+namespace Lightnote\Module;
 
 /**
- * Loader class
- *
- *
+ * BackendModule class
  */
-class Loader
+class BackendModule extends Module
 {
-    public static function load($className)
+    public function setupRoutes(\Lightnote\Routing\RouteCollection $routes, \Lightnote\Mvc\RouteHandler $routeHandler)
     {
-        $file = LIBRARY_PATH . \DIRECTORY_SEPARATOR . str_replace('\\', \DIRECTORY_SEPARATOR, $className) . '.php';
-        if(\file_exists($file))
-        {
-            include_once($file);
-        }
+        // @todo specify config variable for prefix
+        $routes[] = new \Lightnote\Routing\Route(
+            'backend/{controller}/{action}',
+            $routeHandler,
+            new \Lightnote\Routing\RouteConfig(
+                array($this->namespace),
+                array('controller' => 'Website', 'action' => 'index')
+            )
+        );
     }
 }

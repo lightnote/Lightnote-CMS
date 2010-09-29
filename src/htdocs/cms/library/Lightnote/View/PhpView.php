@@ -18,23 +18,58 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Module;
+namespace Lightnote\View;
 
 /**
- * BackendModule class
+ * PhpView class
  */
-class BackendModule extends Module
+class PhpView implements \Lightnote\IView
 {
-    public function setupRoutes(\Lightnote\Routing\RouteCollection $routes, \Lightnote\Mvc\RouteHandler $routeHandler)
+    private $data = array();
+    private $file = null;
+
+
+    public function __construct($file)
     {
-        // @todo specify config variable for prefix
-        $routes[] = new \Lightnote\Routing\Route(
-            'backend/{controller}/{action}',
-            $routeHandler,
-            new \Lightnote\Routing\RouteConfig(
-                array($this->namespace),
-                array('controller' => 'Default', 'action' => 'index')
-            )
-        );
+        $this->file = $file;
+    }
+
+    public function assign($key, $value = null)
+    {
+        if(is_array($key))
+        {
+            foreach($key as $k=>$v)
+            {
+                $this->data[$k] = $v;
+            }
+        }
+        else
+        {
+            $this->data[$key] = $value;
+        }
+    }
+
+    public function clear($key = null)
+    {
+        if($key)
+        {
+            unset($this->data[$key]);
+        }
+        else
+        {
+            $this->data = array();
+        }
+
+    }
+
+    public function fetch()
+    {
+        $viewData = $this->data;
+        ob_start();
+        include_once $this->file;
+        $content = ob_get_contents();
+        ob_end_clean();
+
+        return $content;
     }
 }

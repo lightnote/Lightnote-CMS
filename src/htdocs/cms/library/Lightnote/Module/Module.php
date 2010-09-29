@@ -36,17 +36,14 @@ class Module extends \Lightnote\Attribute
 
     const VIEW_DIR = 'view';
 
-    public static $modulesPath = 'module';
-
+    public static $loadPath = 'module';
 
     /**
      *
      * @var string
      */
     protected $namespace = '';
-
-    
-
+   
     /**
      *
      * @param string $namespace
@@ -54,11 +51,8 @@ class Module extends \Lightnote\Attribute
      */
     public function __construct($namespace, $config = null)
     {
-        $this->namespace = $namespace;
-        
+        $this->namespace = $namespace;        
         $this->loadConfig($config);
-
-        $this->setupAutoloader();
     }
 
     /**
@@ -70,16 +64,6 @@ class Module extends \Lightnote\Attribute
         return $this->namespace;
     }
 
-    protected function loadClass($className)
-    {
-        $path = self::$modulesPath . \DIRECTORY_SEPARATOR . str_replace('\\', \DIRECTORY_SEPARATOR, $className);
-        $path = \preg_replace('/(.+(?:\\\|\/))([^\\/]+Controller)$/', '$1' . self::CONTROLLER_DIR  . '/$2.php', $path);
-        
-        if(file_exists($path))
-        {
-            include_once $path;
-        }
-    }
 
     /**
      *
@@ -95,12 +79,7 @@ class Module extends \Lightnote\Attribute
         
     }
 
-    public function setupAutoloader()
-    {
-        spl_autoload_register(array($this, 'loadClass'));
-    }
-
-    public function setConfig($config = null)
+    protected function setConfig($config = null)
     {
         $this->loadConfig($config);
     }

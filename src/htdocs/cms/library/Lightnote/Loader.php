@@ -18,28 +18,38 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote;
 
 /**
- * ControllerContext class
+ * Loader class
+ *
+ *
  */
-class ControllerContext
+class Loader
 {
-    /**
-     *
-     * @var Controller
-     */
-    public $controller = null;
+    public static $modulesPath = '';
 
-    /**
-     *
-     * @var \Lightnote\Http\HttpContext
-     */
-    public $httpContext = null;
+    public static function load($className)
+    {
+        $file = LIBRARY_PATH . \DIRECTORY_SEPARATOR . str_replace('\\', \DIRECTORY_SEPARATOR, $className) . '.php';
+        if(\file_exists($file))
+        {
+            include_once($file);
+        }
+        else
+        {
+            self::loadModule($className);
+        }
+    }
 
-    /**
-     *
-     * @var \Lightnote\Routing\RouteData
-     */
-    public $routeData = null;
+    public static function loadModule($className)
+    {
+        $path = self::$modulesPath . \DIRECTORY_SEPARATOR . str_replace('\\', \DIRECTORY_SEPARATOR, $className);
+        $path = \preg_replace('/(.+(?:\\\|\/))([^\\/]+Controller)$/', '$1' . self::CONTROLLER_DIR  . '/$2.php', $path);
+
+        if(file_exists($path))
+        {
+            include_once $path;
+        }
+    }
 }

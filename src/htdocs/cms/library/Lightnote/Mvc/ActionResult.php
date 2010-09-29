@@ -18,12 +18,9 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Routing;
+namespace Lightnote\Mvc;
 
-/**
- * RouteData class
- */
-class RouteData
+abstract class ActionResult implements IActionResult
 {
     
 }

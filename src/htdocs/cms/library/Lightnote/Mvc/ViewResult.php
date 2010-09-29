@@ -18,12 +18,34 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Backend;
+namespace Lightnote\Mvc;
 
 /**
- * WebsiteController class
+ * ViewResult class
  */
-class WebsiteController extends \Lightnote\Mvc\Controller
+class ViewResult extends ActionResult
 {
-    
+    private $name = '';
+
+    public function __construct($viewName = '')
+    {
+        $this->name = $viewName;
+    }
+
+    public function executeResult(ControllerContext $context)
+    {
+        $controller = $context->controller;
+        
+        if(!$this->name)
+        {
+            $this->name = $controller->routeData['action'];
+        }
+
+        $viewData = $controller->viewData;
+
+        // @todo change slashes
+        $view = new \Lightnote\View\PhpView('../view/' . $controller->routeData['controller'] . '/' . $this->name . '.phtml');
+        $view->assign($viewData);
+        echo $view->fetch();
+    }
 }

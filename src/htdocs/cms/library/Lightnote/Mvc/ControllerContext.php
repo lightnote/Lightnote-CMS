@@ -18,14 +18,30 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\View;
+namespace Lightnote\Mvc;
 
 /**
- * SmartyView class
- *
- *
+ * ControllerContext class
  */
-class SmartyView implements \Lightnote\IView
+class ControllerContext
 {
+    /**
+     *
+     * @var Controller
+     */
+    public $controller = null;
+
+    /**
+     *
+     * @var \Lightnote\Http\HttpContext
+     */
+    public $httpContext = null;
+
+    /**
+     *
+     * @var \Lightnote\Routing\RouteData
+     */
+    public $routeData = null;
+
     
 }

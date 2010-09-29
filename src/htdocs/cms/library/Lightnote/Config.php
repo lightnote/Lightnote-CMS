@@ -94,7 +94,7 @@ class Config
 
     public function setProperty($propertyName, $propertyValue)
     {
-        if(!$this->data[$this->env])
+        if(!array_key_exists($this->env, $this->data))
         {
             $this->data[$this->env] = array();
         }

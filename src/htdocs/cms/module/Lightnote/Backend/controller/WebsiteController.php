@@ -18,12 +18,15 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote\Backend;
 
-abstract class ActionResult implements IActionResult
+/**
+ * WebsiteController class
+ */
+class WebsiteController extends \Lightnote\Mvc\Controller
 {
-    abstract public function executeResult(ControllerContext $context)
+    public function indexAction()
     {
-        
+        return $this->view();
     }
 }

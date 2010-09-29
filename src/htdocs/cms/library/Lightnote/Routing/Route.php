@@ -188,16 +188,24 @@ class Route extends \Lightnote\Attribute implements IRoute
 
     /**
      *
-     * @return array
+     * @return RouteData
      */
     public function getRouteData($url)
     {
         if($this->lastMatchedUrl == $url || $this->match($url))
         {
-            return $this->data;
+            \uksort($this->data, array($this, 'sortKeys'));
+            return new RouteData($this, $this->data);
         }
 
         return null;
+    }
+
+    private function sortKeys($keyA, $keyB)
+    {
+        $indexA = \array_search($keyA, $this->getDataKeys());
+        $indexB = \array_search($keyB, $this->getDataKeys());
+        return $indexA > $indexB ? 1 : -1;
     }
 
     private function validateParams()

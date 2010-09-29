@@ -43,7 +43,7 @@ abstract class Bootstrap
      * @var Module\ModuleCollection
      */
     public $modules;
-
+    
     public function __construct(Application $application)
     {
         $this->application = $application;
@@ -60,17 +60,13 @@ abstract class Bootstrap
         );
         $backendModule->setupRoutes($this->routes, $handler);
 
-        $this->modules[] = $backendModule;
-
-
-        
+        $this->modules[] = $backendModule;        
     }
 
     protected function registerRoutes()
     {        
         $handler = new Mvc\RouteHandler($this->application->httpContext);
-    }
-    
+    }    
 
     public function run()
     {

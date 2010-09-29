@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2007-2010, Dmitry Monin <dmitry.monin [at] lightnote [dot] org>
  * Permission to use and/or distribute this software for
@@ -18,27 +19,54 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote\Routing;
 
-class Controller
+/**
+ * RouteData class
+ */
+class RouteData implements \ArrayAccess
 {
+
     /**
      *
-     * @var \Lightnote\Http\NameValueCollection
+     * @var Route 
      */
-    public $viewData = null;
-
+    public $route;
     /**
      *
      * @var array
      */
-    protected $routeData = null;
+    public $dataTokens;
 
     /**
      *
-     * @var \Lightnote\Http\HttpContext
+     * @param Route $route
+     * @param array $data
      */
-    protected $httpContext;
+    public function __construct(Route $route, $data)
+    {
+        $this->route = $route;
+        $this->dataTokens = $data;
+    }
 
-    
+    public function offsetSet($offset, $value)
+    {
+        $this->dataTokens[$offset] = $value;
+    }
+
+    public function offsetExists($offset)
+    {
+        return isset($this->dataTokens[$offset]);
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->dataTokens[$offset]);
+    }
+
+    public function offsetGet($offset)
+    {
+        return isset($this->dataTokens[$offset]) ? $this->dataTokens[$offset] : null;
+    }
+
 }
