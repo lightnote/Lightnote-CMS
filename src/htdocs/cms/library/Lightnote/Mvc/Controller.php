@@ -24,7 +24,7 @@ namespace Lightnote\Mvc;
  * @property-read \Lightnote\Http\HttpContext $httpContext
  * @property-read \Lightnote\Routing\RouteData $routeData
  */
-class Controller extends \Lightnote\Attribute
+abstract class Controller extends \Lightnote\Attribute
 {
     /**
      * Path to controller
@@ -37,7 +37,7 @@ class Controller extends \Lightnote\Attribute
      *
      * @var string
      */
-    const VIEW_DIR = '/../view';
+    const VIEW_DIR = '../view';
 
 
     /**
@@ -63,7 +63,6 @@ class Controller extends \Lightnote\Attribute
      * @var \Lightnote\View\IViewFactory
      */
     private $viewFactory = null;
-
 
     public function getRouteData()
     {
@@ -102,7 +101,8 @@ class Controller extends \Lightnote\Attribute
             }
 
 
-            $viewDir = self::$path . self::VIEW_DIR;;
+            $viewDir = self::$path . \DIRECTORY_SEPARATOR . self::VIEW_DIR . \DIRECTORY_SEPARATOR . $this->routeData['controller'];
+            
             $controllerContext = new ControllerContext(
                     $executionContext->httpContext,
                     $executionContext->routeData,

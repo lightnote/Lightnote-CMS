@@ -18,16 +18,25 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Backend;
+namespace Lightnote\Http;
 
 /**
- * WebsiteController class
+ * HttpResponse class
  */
-class WebsiteController extends BackendController
+class HttpResponse
 {
-    public function indexAction()
+    //public $statusCode = null;
+    //public $contentEncoding = null;
+    //public $headers = array();
+    private $output = '';
+
+    public function output()
     {
-        $this->viewData['test'] = 'Tester';
-        return $this->view();
+        echo $this->output;
+    }
+
+    public function write($content)
+    {
+        $this->output .= $content;
     }
 }

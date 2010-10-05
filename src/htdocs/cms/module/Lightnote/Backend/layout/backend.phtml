@@ -1,0 +1,12 @@
+<?php
+$this->addHelper('\Lightnote\Backend\Helper\TranslationHelper::translate', 'translate');
+?><!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Lightnote CMS: <?= $this->translate('') ?>...</title>
+    </head>
+    <body>
+        <?= $this->content ?>
+    </body>
+</html>

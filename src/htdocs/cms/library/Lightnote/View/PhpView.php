@@ -20,6 +20,7 @@
 
 namespace Lightnote\View;
 
+
 /**
  * PhpView class
  */
@@ -28,10 +29,27 @@ class PhpView implements \Lightnote\IView
     private $data = array();
     private $file = null;
 
+    /**
+     *
+     * @var PhpView
+     */
+    private $master = null;
+
+    /**
+     *
+     * @var string
+     */
+    private $placeholder = array();
+    private $content = '';
 
     public function __construct($file)
-    {
-        $this->file = $file;
+    {        
+        if(!file_exists($file))
+        {
+            throw new \Lightnote\Exception\System\FileNotFoundException("File '" . $file . "' couldn't be found");
+        }
+
+        $this->file = realpath($file);
     }
 
     public function assign($key, $value = null)
@@ -62,15 +80,76 @@ class PhpView implements \Lightnote\IView
 
     }
 
+
+    private function getPlaceholderAttributes($attrStr)
+    {
+        $attrPattern = '/([^\s=]+)[\s\n\t\r]*=[\s\n\t\r]*[\'"]([^<\'"]*)[\'"]/';
+        preg_match_all($attrPattern, $attrStr, $attrMatches, \PREG_SET_ORDER);
+        $attributes = array();
+
+        for($i = 0, $count = count($attrMatches); $i < $count; $i++)
+        {
+            $attributes[$attrMatches[$i][1]] = $attrMatches[$i][2];
+        }
+        return $attributes;
+    }
+
     public function fetch()
     {
+        return $this->fetchFile($this->file);
+    }
+
+    private function fetchFile($file)
+    {
+        $cwd = \getcwd();
+
         $viewData = $this->data;
-        
+
+        chdir(dirname($this->file));
         ob_start();
-        include_once $this->file;
+        include $this->file;
         $content = ob_get_contents();
         ob_end_clean();
+        chdir($cwd);
+        
+        if($this->master)
+        {
+            $this->master->content = $content;
+            
+            $pattern  = '/<view:placeholder([^>]+)>/s';
+
+            if(preg_match_all($pattern, $content, $matches, \PREG_SET_ORDER))
+            {
+                for($i = 0, $count = count($matches); $i < $count; $i++)
+                {
+                    $attributes = $this->getPlaceholderAttributes($matches[$i][1]);
+                    if(empty($attributes['name']))
+                    {
+                        throw new \Lightnote\Exception('ViewError (' . $this->file . '): Placeholder omits required attribute "name".');
+                    }
+
+                    $offset = \Lightnote\Util\String::indexOf($content, $matches[$i][0]);
+                    $end = \Lightnote\Util\String::indexOf($content, '</view:placeholder>', $offset);
+                    $start = $offset + \Lightnote\Util\String::length($matches[$i][0]);
+                    $placeholderContent = \Lightnote\Util\String::subString($content, $start, $end - $start);
+                    
+                    $this->master->placeholder[$attributes['name']] = $placeholderContent;                                        
+                }                
+            }
+            
+            return $this->master->fetch();
+        }
 
         return $content;
+    }
+
+    public function setMaster($fileName)
+    {
+        if(!file_exists($fileName))
+        {
+            throw new \Lightnote\Exception\System\FileNotFoundException('Master file "' . $fileName . '" couldn\'t be found (in "' . $this->file . '").');
+        }
+        $this->master = new PhpView(realpath($fileName));
+        
     }
 }

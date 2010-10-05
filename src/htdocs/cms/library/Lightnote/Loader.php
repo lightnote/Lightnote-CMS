@@ -30,21 +30,38 @@ class Loader
     const MODULE_CONTROLLER_DIR = 'controller';
 
     public static $modulesPath = '';
+    private static $lookupDirs = array(
+        array(
+            'dir' => LIBRARY_PATH,
+            'prefix' => ''
+        )
+    );
+
+    public static function addLookupDirectory($dir, $prefix = '')
+    {
+        self::$lookupDirs[] = array(
+            'dir' => $dir,
+            'prefix' => $prefix
+        );
+
+    }
 
     public static function load($className)
     {
-        $file = LIBRARY_PATH . \DIRECTORY_SEPARATOR . str_replace('\\', \DIRECTORY_SEPARATOR, $className) . '.php';
-        if(\file_exists($file))
+        foreach(self::$lookupDirs as $lookupDir)
         {
-            include_once($file);
+            $file = $lookupDir['dir'] . \DIRECTORY_SEPARATOR . str_replace('\\', \DIRECTORY_SEPARATOR, $className) . '.php';
+            if(\file_exists($file))
+            {
+                include_once($file);
+                return true;
+            }
         }
-        else
-        {
-            self::loadModule($className);
-        }
+
+        return self::loadModuleController($className);
     }
 
-    public static function loadModule($className)
+    private static function loadModuleController($className)
     {
         $path = self::$modulesPath . \DIRECTORY_SEPARATOR . str_replace('\\', \DIRECTORY_SEPARATOR, $className);
         $path = \preg_replace('/(.+(?:\\\|\/))([^\\/]+Controller)$/', '$1' . self::MODULE_CONTROLLER_DIR  . '/$2.php', $path);
@@ -52,7 +69,11 @@ class Loader
         if(file_exists($path))
         {
             include_once $path;
-            $className::$path = dirname($path);            
+            $className::$path = dirname($path);
+
+            return true;
         }
+
+        return false;
     }
 }

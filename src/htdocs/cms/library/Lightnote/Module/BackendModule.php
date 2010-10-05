@@ -25,6 +25,14 @@ namespace Lightnote\Module;
  */
 class BackendModule extends Module
 {
+    public function __construct($namespace, $config = null)
+    {
+        parent::__construct($namespace, $config);
+        
+        \Lightnote\Loader::addLookupDirectory(dirname(__DIR__ . '/library'));
+        
+    }
+
     public function setupRoutes(\Lightnote\Routing\RouteCollection $routes, \Lightnote\Mvc\RouteHandler $routeHandler)
     {
         // @todo specify config variable for prefix

@@ -18,16 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Backend;
+namespace Lightnote\Test\Mock;
 
 /**
- * WebsiteController class
+ * TestController class
  */
-class WebsiteController extends BackendController
+class TestController extends \Lightnote\Mvc\Controller
 {
-    public function indexAction()
-    {
-        $this->viewData['test'] = 'Tester';
-        return $this->view();
-    }
+    
 }

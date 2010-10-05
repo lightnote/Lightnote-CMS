@@ -68,8 +68,13 @@ class HttpRequest
      */
     private $method = 'GET';
 
+    /**
+     *
+     * @return <type> 
+     */
     public static function getEmpty()
     {
+        $request = new HttpRequest();
         $request->get = new NameValueCollection();
         $request->post = new NameValueCollection();
         $request->server = new NameValueCollection();
@@ -79,6 +84,41 @@ class HttpRequest
         return $request;
     }
 
+    /**
+     * @param $param an associative array with config variables
+     * @example array(
+     *  'get' => array(),
+     *  'post' => array(),
+     *  'files' => array()
+     * )
+     *
+     * @return HttpRequest
+     */
+    public static function getByParams($params)
+    {
+        $request = new HttpRequest();
+        foreach($params as $key=>$value)
+        {
+            if(\property_exists($key, $this))
+            {
+                if(is_array($value))
+                {
+                    $value = new NameValueCollection($value);
+                }
+                else if($key != 'method' && !($value instanceof NameValueCollection))
+                {
+                    throw new \Lightnote\Exception("'" . $key . '\' config property should be an instance of NameValueCollection.');
+                }
+
+                $this->$key = $value;
+            }
+        }
+    }
+
+    /**
+     *
+     * @return HttpRequest 
+     */
     public static function getFromServer()
     {
         $request = new HttpRequest();

@@ -18,16 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Backend;
+namespace Lightnote\Translation;
 
 /**
- * WebsiteController class
+ * ITranslation class
  */
-class WebsiteController extends BackendController
+interface ITranslation
 {
-    public function indexAction()
-    {
-        $this->viewData['test'] = 'Tester';
-        return $this->view();
-    }
+    function translate($string);
 }

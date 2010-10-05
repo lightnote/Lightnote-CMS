@@ -21,13 +21,9 @@
 namespace Lightnote\Backend;
 
 /**
- * WebsiteController class
+ * BackendController class
  */
-class WebsiteController extends BackendController
+abstract class BackendController extends \Lightnote\Mvc\Controller
 {
-    public function indexAction()
-    {
-        $this->viewData['test'] = 'Tester';
-        return $this->view();
-    }
+    
 }

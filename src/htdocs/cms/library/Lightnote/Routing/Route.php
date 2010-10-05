@@ -155,14 +155,21 @@ class Route extends \Lightnote\Attribute implements IRoute
             $urlPartExists = \array_key_exists($i, $urlParts);
 
             $lastIndex = $i;
-            if($urlPartExists && \preg_match($regexp, $urlParts[$i], $matches))
+            if($urlPartExists)
             {
-                foreach($this->getDataKeys() as $groupName)
+                if(\preg_match($regexp, $urlParts[$i], $matches))
                 {
-                    if(\array_key_exists($groupName, $matches))
+                    foreach($this->getDataKeys() as $groupName)
                     {
-                        $this->data[$groupName] = $matches[$groupName];
+                        if(\array_key_exists($groupName, $matches))
+                        {
+                            $this->data[$groupName] = $matches[$groupName];
+                        }
                     }
+                }
+                else
+                {
+                    return false;
                 }
             }
             else if (!$urlPartExists)

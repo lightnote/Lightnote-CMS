@@ -18,74 +18,56 @@
  * SOFTWARE.
  */
 
-namespace Lightnote;
+
+namespace Lightnote\Util;
 
 /**
- * Session class
+ * String class
  */
-class Session
+class String
 {
-    private static $nativeSession = null;
-
-    public static $isUnitTest = false;
-
-    private static $isStarted = false;
-    private static function start()
+    public static function indexOf($haystack, $needle, $offset = 0)
     {
-        if(self::$isStarted)
+        if(\function_exists('\mb_strpos'))
         {
-            return;
-        }
-        
-        if(!self::$isUnitTest)
-        {
-            session_start();
-        }
-
-        
-        
-
-        
-        self::$isStarted = true;
-    }
-
-
-    /**
-     *
-     * @var string
-     */
-    private $namespace = '';
-
-
-    /**
-     *
-     * @param string $namespace
-     */
-    public function __construct($namespace = 'Default')
-    {
-        self::start();
-
-        if(isset($_SESSION))
-        {
-            $_SESSION['__LIGHTNOTE__'] = array();
-            self::$nativeSession[$namespace] = &$_SESSION['__LIGHTNOTE__'];
+            return \mb_strpos($haystack, $needle, $offset, 'utf-8');
         }
         else
         {
-            // CLI mode
-            self::$nativeSession[$namespace] = array();
+            return \strpos(\utf8_decode($haystack), $needle, $offset);
         }
-
-        $this->namespace = $namespace;
     }
 
-    public function __get($key)
+    public static function length($str)
     {
-        return self::$nativeSession[$this->namespace];
+        if(\function_exists('\mb_strlen'))
+        {
+            return \mb_strlen($str, 'utf-8');
+        }
+        else
+        {
+            return \strlen(\utf8_decode($str));
+        }
     }
-
-    public function __set($key, $value)
+    
+    public static function subString($str, $start, $length = null)
     {
-        self::$nativeSession[$this->namespace] = $value;
+        if(\function_exists('\mb_substr'))
+        {
+            if($length === null)
+            {
+                $length = \mb_strlen($str, 'utf-8');
+            }
+            return \mb_substr($str, $start, $length, 'utf-8');
+        }
+        else
+        {
+            if($length === null)
+            {
+                $length = \strlen($str);
+            }
+
+            return \utf8_encode(\substr(\utf8_decode($str), $start, $length));
+        }
     }
 }

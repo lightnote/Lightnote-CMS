@@ -33,6 +33,12 @@ class HttpContext
 
     /**
      *
+     * @var HttpResponse
+     */
+    public $response = null;
+
+    /**
+     *
      * @var Session
      */
     public $session = null;
@@ -42,4 +48,5 @@ class HttpContext
      * @var Cache
      */
     public $cache = null;
+    
 }

@@ -27,6 +27,12 @@ class ViewResult extends ActionResult
 {
     private $name = '';
 
+    /**
+     *
+     * @var \Lightnote\Http\NameValueCollection
+     */
+    public $viewData = null;
+
     public function __construct($name)
     {
         $this->name = $name;
@@ -38,15 +44,20 @@ class ViewResult extends ActionResult
 
         if(!$this->name)
         {
-            $this->name = $context->routeData['controller'] . \DIRECTORY_SEPARATOR  . $context->routeData['action'];
+            $this->name = $context->routeData['action'];            
         }
 
         $viewData = $controller->viewData;
+        if(is_array($viewData))
+        {
+            $viewData = new \Lightnote\Http\NameValueCollection($viewData);
+        }
 
         $path = $context->viewDir . \DIRECTORY_SEPARATOR . $this->name . '.phtml';
-
-        $view = $context->viewFactory->getView($path);
+        
+        $view = $context->viewFactory->getView($path);        
         $view->assign($viewData);
-        echo $view->fetch();
+        
+        $controller->httpContext->response->write($view->fetch());
     }
 }

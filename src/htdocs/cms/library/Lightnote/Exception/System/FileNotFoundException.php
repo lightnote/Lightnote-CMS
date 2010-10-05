@@ -18,16 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Backend;
+namespace Lightnote\Exception\System;
 
 /**
- * WebsiteController class
+ * FileNotFoundException class
  */
-class WebsiteController extends BackendController
+class FileNotFoundException extends \Lightnote\Exception
 {
-    public function indexAction()
-    {
-        $this->viewData['test'] = 'Tester';
-        return $this->view();
-    }
+    
 }

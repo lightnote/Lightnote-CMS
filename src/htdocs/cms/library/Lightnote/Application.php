@@ -115,6 +115,7 @@ class Application extends Attribute
         $this->httpContext = new Http\HttpContext();        
         $this->httpContext->session = new Session();
         $this->httpContext->request = $this->getRequest();
+        $this->httpContext->response = new Http\HttpResponse();
 
         return $this->httpContext;
     }
@@ -199,6 +200,8 @@ class Application extends Attribute
         {
             throw new Exception('Controller ' . $controllerName . ' not found.');
         }
+
+        $this->httpContext->response->output();
     }
 
     private function runBootstrap()
