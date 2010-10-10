@@ -18,14 +18,31 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Plugin\Content\Text;
+namespace Lightnote\Frontend;
 
 /**
- * Controller class
- *
- *
+ * FrontendController class
  */
-class Controller
+class FrontendController extends \Lightnote\Mvc\Controller
 {
-    
+    public function indexAction()
+    {
+        // Getting current language
+        
+
+        // Getting current page
+        
+        
+        // Getting page view
+        
+        // $pageView->helper->page (renderTitle, renderContent)
+        // $pageView->helper->doctype
+        // $pageView->helper->script
+        // $pageView->helper->style
+
+        // $extensionView->script
+        
+
+        //
+    }
 }

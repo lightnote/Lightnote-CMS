@@ -84,7 +84,7 @@ class Application extends Attribute
         foreach($namespaces as $namespace)
         {
             $controllerClass = $namespace . '\\' . $controllerName . 'Controller';
-
+            
             if(class_exists($controllerClass))
             {
                 $controller = new $controllerClass();

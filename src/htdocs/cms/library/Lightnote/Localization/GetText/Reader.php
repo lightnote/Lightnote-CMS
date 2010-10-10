@@ -40,7 +40,7 @@
  * that you don't want to keep in memory)
  */
 
-namespace Lightnote\Translation\GetText;
+namespace Lightnote\Localization\GetText;
 
 class Reader {
     //public:

@@ -54,13 +54,21 @@ abstract class Bootstrap
     protected function registerModules()
     {
         $handler = new Mvc\RouteHandler($this->application->httpContext);
+
+        // Backend
         $backendModule = new Module\BackendModule(
             'Lightnote\Backend',
             $this->application->config->getProperty('lightnote.module.backend')
         );
         $backendModule->setupRoutes($this->routes, $handler);
+        $this->modules[] = $backendModule;
 
-        $this->modules[] = $backendModule;        
+        // Frontend
+        $frontendModule = new Module\FrontendModule(
+            'Lightnote\Frontend',
+            $this->application->config->getProperty('lightnote.module.frontend')
+        );
+        $frontendModule->setupRoutes($this->routes, $handler);
     }
 
     protected function registerRoutes()

@@ -39,14 +39,14 @@ class ExecutionContext
 
     /**
      *
-     * @var \Lightnote\View\IViewFactory
+     * @var \Lightnote\Factory
      */
-    public $viewFactory;
+    public $factory;
 
-    public function __construct(\Lightnote\Http\HttpContext $httpContext, \Lightnote\Routing\RouteData $routeData, \Lightnote\View\IViewFactory $viewFactory)
+    public function __construct(\Lightnote\Http\HttpContext $httpContext, \Lightnote\Routing\RouteData $routeData, \Lightnote\Factory $factory)
     {
         $this->httpContext = $httpContext;
         $this->routeData = $routeData;
-        $this->viewFactory = $viewFactory;
+        $this->factory = $factory;
     }
 }

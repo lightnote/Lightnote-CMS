@@ -18,12 +18,14 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Translation;
+namespace Lightnote\ContentPlugin\Text;
 
 /**
- * ITranslation class
+ * Controller class
+ *
+ *
  */
-interface ITranslation
+class TextContentPlugin
 {
-    function translate($string);
+    
 }

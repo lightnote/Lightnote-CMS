@@ -1,14 +1,12 @@
 <?php
-namespace Lightnote\Translation\GetText;
+namespace Lightnote\Localization\GetText;
 
-class GetTextTranslation implements \Lightnote\Translation\ITranslation
+class Localization implements \Lightnote\Localization\ILocalization
 {
     private $lang;
     
     public function __construct($localeFile)
     {
-        $this->domain = $domain;
-        
         $stream = new CachedFileReader($localeFile);
         $this->lang   = new Reader($stream);
     }

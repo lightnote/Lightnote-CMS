@@ -25,5 +25,16 @@ namespace Lightnote\Module;
  */
 class FrontendModule extends Module
 {
-    
+    public function setupRoutes(\Lightnote\Routing\RouteCollection $routes, \Lightnote\Mvc\RouteHandler $routeHandler)
+    {
+        // @todo specify config variable for prefix
+        $routes[] = new \Lightnote\Routing\Route(
+            '{*url}',
+            $routeHandler,
+            new \Lightnote\Routing\RouteConfig(
+                array($this->namespace),
+                array('controller' => 'Frontend', 'action' => 'index')
+            )
+        );
+    }
 }

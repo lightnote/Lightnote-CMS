@@ -44,6 +44,15 @@ class Factory implements View\IViewFactory
     }
 
     /**
+     * @return Localization\ILocalization
+     */
+    public function getLocalization()
+    {
+        // @todo insert correct path to localization file here
+        return new Localization\GetText\Localization('enUS.mo');
+    }
+
+    /**
      *
      * @param string $modelName
      * @return Repository\IRepository

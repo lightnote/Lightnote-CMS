@@ -27,6 +27,8 @@ class WebsiteController extends BackendController
 {
     public function indexAction()
     {
+        $localization = $this->factory->getLocalization();
+
         $this->viewData['test'] = 'Tester';
         return $this->view();
     }

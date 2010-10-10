@@ -18,46 +18,12 @@
  * SOFTWARE.
  */
 
-namespace Lightnote\Mvc;
+namespace Lightnote\Localization;
 
 /**
- * ViewResult class
+ * ITranslation class
  */
-class ViewResult extends ActionResult
+interface ILocalization
 {
-    private $name = '';
-
-    /**
-     *
-     * @var \Lightnote\Http\NameValueCollection
-     */
-    public $viewData = null;
-
-    public function __construct($name)
-    {
-        $this->name = $name;
-    }
-
-    public function executeResult(ControllerContext $context)
-    {
-        $controller = $context->controller;
-
-        if(!$this->name)
-        {
-            $this->name = $context->routeData['action'];            
-        }
-
-        $viewData = $controller->viewData;
-        if(is_array($viewData))
-        {
-            $viewData = new \Lightnote\Http\NameValueCollection($viewData);
-        }
-
-        $path = $context->viewDir . \DIRECTORY_SEPARATOR . $this->name . '.phtml';
-        
-        $view = $context->factory->getView($path);
-        $view->assign($viewData);
-        
-        $controller->httpContext->response->write($view->fetch());
-    }
+    function translate($string);
 }

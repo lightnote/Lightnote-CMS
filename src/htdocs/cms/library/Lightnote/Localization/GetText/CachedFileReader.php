@@ -1,6 +1,6 @@
 <?php
 
-namespace Lightnote\Translation\GetText;
+namespace Lightnote\Localization\GetText;
 
 class CachedFileReader extends StringReader {
   function CachedFileReader($filename) {

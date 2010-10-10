@@ -115,6 +115,23 @@ class RouteTest extends \PHPUnit_Framework_TestCase
         $routeData = $route->getRouteData('/category/myVal');
         $this->assertEquals($routeData['catchall'], '');
 
+
+        $route = new Route(
+            '{*catchall}',
+            $this->routeHandler,
+            new RouteConfig(
+                array(),
+                array(
+                    'controller' => 'DefaultController',
+                    'action' => 'List'
+                )
+            )
+        );
+
+        $this->assertTrue($route->match('/'));
+        $this->assertTrue($route->match('/aaaa/'));
+        $this->assertTrue($route->match('/aaaa/bbb'));
+
     }
 
     public function testConstrains()

@@ -60,9 +60,9 @@ abstract class Controller extends \Lightnote\Attribute
 
     /**
      *
-     * @var \Lightnote\View\IViewFactory
+     * @var \Lightnote\Factory
      */
-    private $viewFactory = null;
+    protected $factory = null;
 
     public function getRouteData()
     {
@@ -79,6 +79,7 @@ abstract class Controller extends \Lightnote\Attribute
         $this->viewData = new \Lightnote\Http\NameValueCollection();
         $this->routeData = $executionContext->routeData;
         $this->httpContext = $executionContext->httpContext;
+        $this->factory = $executionContext->factory;
         
         $action = $executionContext->routeData['action'];
         if(empty($action))
@@ -106,7 +107,7 @@ abstract class Controller extends \Lightnote\Attribute
             $controllerContext = new ControllerContext(
                     $executionContext->httpContext,
                     $executionContext->routeData,
-                    $executionContext->viewFactory,
+                    $executionContext->factory,
                     $this,
                     $viewDir
             );

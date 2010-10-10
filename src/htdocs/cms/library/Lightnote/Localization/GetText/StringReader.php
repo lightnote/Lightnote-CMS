@@ -1,6 +1,6 @@
 <?php
 
-namespace Lightnote\Translation\GetText;
+namespace Lightnote\Localization\GetText;
 
 class StringReader {
   var $_pos;
